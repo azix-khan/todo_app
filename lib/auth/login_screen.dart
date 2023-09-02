@@ -63,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text("Login Screen"),
+          automaticallyImplyLeading: false,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),

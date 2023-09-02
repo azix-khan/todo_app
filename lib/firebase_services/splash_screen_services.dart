@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/auth/login_screen.dart';
+import 'package:todo_app/posts/posts_screen.dart';
 
 class SplashServices {
   Future<void> isLogin(BuildContext context) async {
@@ -14,7 +15,7 @@ class SplashServices {
     if (user != null) {
       Timer(const Duration(seconds: 3), () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+            MaterialPageRoute(builder: (context) => const PostScreen()));
       });
     } else {
       Timer(const Duration(seconds: 3), () {
