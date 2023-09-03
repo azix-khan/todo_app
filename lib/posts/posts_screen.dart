@@ -21,7 +21,6 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -29,28 +28,36 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post Screen'),
+        title: const Text('Your Notes Here'),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-              onPressed: () {
-                auth.signOut().then((value) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
-                }).onError((error, stackTrace) {
-                  Utils().toastMessage(error.toString());
-                });
-              },
-              icon: const Icon(Icons.logout)),
+            onPressed: () {
+              auth.signOut().then((value) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                );
+              }).onError((error, stackTrace) {
+                Utils().toastMessage(error.toString());
+              });
+            },
+            icon: const Icon(Icons.logout),
+            tooltip: 'Sign Out',
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddPostScreen()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddPostScreen(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -59,84 +66,132 @@ class _PostScreenState extends State<PostScreen> {
         child: Column(
           children: [
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
                 controller: searchFilter,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Search',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: const BorderSide(width: 1),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0.0, horizontal: 18.0),
                 ),
                 onChanged: (String value) {
                   setState(() {});
                 },
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Expanded(
-                child: FirebaseAnimatedList(
-                    query: ref,
-                    defaultChild: const Center(
-                      child: Text('Loading...'),
-                    ),
-                    itemBuilder: (context, snapshot, animation, index) {
-                      final title = snapshot.child('title').value.toString();
-                      if (searchFilter.text.isEmpty) {
-                        return ListTile(
-                          title: InkWell(
-                            onTap: () {
-                              showCustomBottomSheet(context, title);
-                            },
-                            child: Text(
-                              snapshot.child('title').value.toString(),
-                              overflow: TextOverflow.ellipsis,
+              child: FirebaseAnimatedList(
+                query: ref,
+                defaultChild: const Center(
+                  child: Text('Loading...'),
+                ),
+                itemBuilder: (context, snapshot, animation, index) {
+                  final title = snapshot.child('title').value.toString();
+                  if (searchFilter.text.isEmpty) {
+                    return Card(
+                      elevation: 4,
+                      color: Colors.blueGrey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 6.0, horizontal: 0.0),
+                        title: InkWell(
+                          onTap: () {
+                            showCustomBottomSheet(context, title);
+                          },
+                          child: Card(
+                            elevation: 4,
+                            color: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                snapshot.child('title').value.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  // fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                          // subtitle: Text(snapshot.child('id').value.toString()),
-                          trailing: PopupMenuButton(
-                              icon: const Icon(Icons.more_vert),
-                              itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                        value: 1,
-                                        child: ListTile(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            showMyDialog(
-                                                title,
-                                                snapshot
-                                                    .child('id')
-                                                    .value
-                                                    .toString());
-                                          },
-                                          title: const Text('Edit'),
-                                          trailing: const Icon(Icons.edit),
-                                        )),
-                                    PopupMenuItem(
-                                        value: 1,
-                                        child: ListTile(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            showMyDialogForDelete(snapshot
-                                                .child('id')
-                                                .value
-                                                .toString());
-                                          },
-                                          title: const Text('Delete'),
-                                          trailing: const Icon(Icons.delete),
-                                        )),
-                                  ]),
-                        );
-                      } else if (title.toLowerCase().contains(
-                          searchFilter.text.toLowerCase().toString())) {
-                        return ListTile(
-                          title: Text(snapshot.child('title').value.toString()),
-                          subtitle: Text(snapshot.child('id').value.toString()),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    })),
+                        ),
+                        trailing: PopupMenuButton(
+                          icon: const Icon(Icons.more_vert),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 1,
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  showMyDialog(
+                                    title,
+                                    snapshot.child('id').value.toString(),
+                                  );
+                                },
+                                title: const Text('Edit'),
+                                trailing: const Icon(Icons.edit),
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 1,
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  showMyDialogForDelete(
+                                    snapshot.child('id').value.toString(),
+                                  );
+                                },
+                                title: const Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                trailing: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else if (title
+                      .toLowerCase()
+                      .contains(searchFilter.text.toLowerCase().toString())) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      title: Text(
+                        snapshot.child('title').value.toString(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(snapshot.child('id').value.toString()),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -171,7 +226,7 @@ class _PostScreenState extends State<PostScreen> {
                   ref.child(id).update({
                     'title': editingController.text.toString()
                   }).then((value) {
-                    Utils().toastMessage('Post Updated');
+                    Utils().toastMessage('Task Updated');
                   }).onError((error, stackTrace) {
                     Utils().toastMessage(error.toString());
                   });
@@ -188,8 +243,11 @@ class _PostScreenState extends State<PostScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Delete'),
-            content: const Text('Do you really want to delete this post?'),
+            title: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+            content: const Text('Do you really want to delete this task?'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -201,12 +259,15 @@ class _PostScreenState extends State<PostScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   ref.child(id).remove().then((value) {
-                    Utils().toastMessage('Post Deleted');
+                    Utils().toastMessage('Task Deleted');
                   }).onError((error, stackTrace) {
                     Utils().toastMessage(error.toString());
                   });
                 },
-                child: const Text('Delete'),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
             ],
           );
@@ -237,8 +298,15 @@ class _PostScreenState extends State<PostScreen> {
               const Divider(
                 thickness: 2.0,
               ),
-              const SizedBox(height: 16.0),
-              Text(title),
+              Container(
+                height: 340,
+                child: SingleChildScrollView(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
               // const SizedBox(height: 16.0),
               // ElevatedButton(
               //   onPressed: () {

@@ -84,6 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value!.isEmpty) {
                         return 'Email Required';
                       }
+                      String pattern =
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                      RegExp regex = RegExp(pattern);
+                      if (!(regex.hasMatch(value))) {
+                        return 'Invalid Email';
+                      }
                       return null;
                     },
                     decoration: InputDecoration(
@@ -100,9 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextFormField(
                     controller: passwordController,
+                    obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Password Required';
+                      }
+                      String pattern =
+                          r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
+                      RegExp regex = RegExp(pattern);
+                      if (!(regex.hasMatch(value))) {
+                        return 'Use spacial characters and numbers';
                       }
                       return null;
                     },

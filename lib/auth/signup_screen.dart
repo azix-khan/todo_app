@@ -18,6 +18,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -75,8 +77,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    height: 250,
+                    height: 200,
                     child: Image.asset('assets/signup.png'),
+                  ),
+                  TextFormField(
+                    controller: firstNameController,
+                    decoration: InputDecoration(
+                      hintText: 'First Name',
+                      prefixIcon: const Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0.0,
+                      ),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Field Required';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
                   ),
                   TextFormField(
                     controller: emailController,
@@ -84,7 +109,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Email',
                       prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0.0,
                       ),
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -92,25 +120,71 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (value!.isEmpty) {
                         return 'Email Required';
                       }
+                      String pattern =
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                      RegExp regex = RegExp(pattern);
+                      if (!(regex.hasMatch(value))) {
+                        return 'Invalid Email';
+                      }
                       return null;
                     },
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 15,
                   ),
                   TextFormField(
+                    obscureText: true,
                     controller: passwordController,
                     decoration: InputDecoration(
                       hintText: 'Password',
                       prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0.0,
                       ),
                     ),
                     keyboardType: TextInputType.visiblePassword,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Password Required';
+                      }
+                      String pattern =
+                          r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
+                      RegExp regex = RegExp(pattern);
+                      if (!(regex.hasMatch(value))) {
+                        return 'Use spacial characters and numbers';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    controller: confirmPasswordController,
+                    decoration: InputDecoration(
+                      hintText: 'Confirm Password',
+                      prefixIcon: const Icon(Icons.lock),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0.0,
+                      ),
+                    ),
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Password Required';
+                      }
+                      String pattern =
+                          r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
+                      RegExp regex = RegExp(pattern);
+                      if (!(regex.hasMatch(value))) {
+                        return 'Use spacial characters and numbers';
                       }
                       return null;
                     },

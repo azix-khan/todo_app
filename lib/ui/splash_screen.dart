@@ -26,7 +26,13 @@ class _SplashScreenState extends State<SplashScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Center(
-            child: Text('TODO'),
+            child: Text(
+              'TO-DO\nNOTES',
+              style: TextStyle(
+                  color: Colors.teal,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            ),
           )
         ],
       ),

@@ -18,7 +18,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Post Screen'),
+        title: const Text('Add New'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -31,7 +31,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
               maxLines: 4,
               controller: postController,
               decoration: const InputDecoration(
-                  labelText: 'What is in your mind?',
+                  labelText: 'Note something down',
                   border: OutlineInputBorder()),
             ),
             const SizedBox(
@@ -39,7 +39,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             RoundButton(
                 loading: loading,
-                title: 'Add Post',
+                title: 'Add Task',
                 onTap: () {
                   setState(() {
                     loading = true;
@@ -49,7 +49,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     'id': id,
                     'title': postController.text.toString()
                   }).then((value) {
-                    Utils().toastMessage('Post Added');
+                    Utils().toastMessage('Task Added');
                     setState(() {
                       loading = false;
                     });
