@@ -2,17 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo_app/auth/login_screen.dart';
-import 'package:todo_app/posts/add_post_screen.dart';
+import 'package:todo_app/posts/add_task_screen.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
 
-class PostScreen extends StatefulWidget {
-  const PostScreen({Key? key}) : super(key: key);
+class TasksScreen extends StatefulWidget {
+  const TasksScreen({Key? key}) : super(key: key);
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<TasksScreen> createState() => _TasksScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _TasksScreenState extends State<TasksScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final searchFilter = TextEditingController();
 
@@ -50,7 +50,7 @@ class _PostScreenState extends State<PostScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddPostScreen(),
+              builder: (context) => const AddTaskScreen(),
             ),
           );
         },

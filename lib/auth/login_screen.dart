@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo_app/auth/signup_screen.dart';
-import 'package:todo_app/posts/posts_screen.dart';
+import 'package:todo_app/posts/tasks_screen.dart';
 import 'package:todo_app/widgets/round_button.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,9 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // You can now use the userTasks snapshot to display tasks
         // For example, print the task titles
-        userTasks.docs.forEach((task) {
-          print('Task Title: ${task.data()['title']}');
-        });
+        userTasks.docs.forEach(
+          (task) {
+            print('Task Title: ${task.data()['title']}');
+          },
+        );
 
         setState(() {
           loading = false;
@@ -59,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Utils().toastMessage("Login Successfully");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const PostScreen()),
+          MaterialPageRoute(builder: (context) => const TasksScreen()),
         );
       }
     } catch (error) {

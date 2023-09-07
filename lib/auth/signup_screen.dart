@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo_app/auth/login_screen.dart';
-import 'package:todo_app/posts/posts_screen.dart';
+import 'package:todo_app/posts/tasks_screen.dart';
 import 'package:todo_app/widgets/round_button.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -63,7 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Utils().toastMessage("Sign Up Successfully");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const PostScreen()),
+          MaterialPageRoute(builder: (context) => const TasksScreen()),
         );
       }
     } catch (error) {

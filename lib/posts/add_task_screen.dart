@@ -4,14 +4,14 @@ import 'package:todo_app/widgets/round_button.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+class AddTaskScreen extends StatefulWidget {
+  const AddTaskScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
+class _AddTaskScreenState extends State<AddTaskScreen> {
   final postController = TextEditingController();
   bool loading = false;
 
