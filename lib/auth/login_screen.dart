@@ -5,6 +5,7 @@ import 'package:todo_app/auth/signup_screen.dart';
 import 'package:todo_app/posts/posts_screen.dart';
 import 'package:todo_app/widgets/round_button.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,34 +23,52 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
   }
 
-  void login() {
+  void login() async {
     setState(() {
       loading = true;
     });
-    _auth
-        .signInWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text.toString())
-        .then((value) {
-      setState(() {
-        loading = false;
-      });
-      Utils().toastMessage("Login Successfully");
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const PostScreen()));
-    }).onError((error, stackTrace) {
+
+    try {
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text.toString(),
+      );
+
+      if (userCredential != null) {
+        // Retrieve the user's tasks from Firestore
+        final userId = userCredential.user!.uid;
+        final tasksCollection = FirebaseFirestore.instance.collection('tasks');
+        final userTasks =
+            await tasksCollection.where('userId', isEqualTo: userId).get();
+
+        // You can now use the userTasks snapshot to display tasks
+        // For example, print the task titles
+        userTasks.docs.forEach((task) {
+          print('Task Title: ${task.data()['title']}');
+        });
+
+        setState(() {
+          loading = false;
+        });
+
+        Utils().toastMessage("Login Successfully");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PostScreen()),
+        );
+      }
+    } catch (error) {
       debugPrint(error.toString());
       setState(() {
         loading = false;
       });
       Utils().toastMessage(error.toString());
-    });
+    }
   }
 
   @override
@@ -115,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
                       RegExp regex = RegExp(pattern);
                       if (!(regex.hasMatch(value))) {
-                        return 'Use spacial characters and numbers';
+                        return 'Use special characters and numbers';
                       }
                       return null;
                     },
@@ -147,9 +166,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignUpScreen(),
+                            ),
+                          );
                         },
                         child: const Text("Sign Up"),
                       ),

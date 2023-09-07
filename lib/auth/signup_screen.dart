@@ -5,9 +5,10 @@ import 'package:todo_app/auth/login_screen.dart';
 import 'package:todo_app/posts/posts_screen.dart';
 import 'package:todo_app/widgets/round_button.dart';
 import 'package:todo_app/widgets/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -25,34 +26,53 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    firstNameController.dispose();
+    confirmPasswordController.dispose();
   }
 
-  void signUp() {
+  void signUp() async {
     setState(() {
       loading = true;
     });
-    _auth
-        .createUserWithEmailAndPassword(
-            email: emailController.text.toString(),
-            password: passwordController.text.toString())
-        .then((value) {
-      setState(() {
-        loading = false;
-      });
-      Utils().toastMessage("Login Successfully");
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const PostScreen()));
-    }).onError((error, stackTrace) {
+
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.toString(),
+        password: passwordController.text.toString(),
+      );
+
+      if (userCredential != null) {
+        final userId = userCredential.user!.uid;
+
+        // Create an initial task for the new user
+        final tasksCollection = FirebaseFirestore.instance.collection('tasks');
+        await tasksCollection.add({
+          'userId': userId,
+          'title':
+              'Welcome ${firstNameController.text.toString()} to the Notes App',
+          'description': 'This is your first task!',
+        });
+
+        setState(() {
+          loading = false;
+        });
+
+        Utils().toastMessage("Sign Up Successfully");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PostScreen()),
+        );
+      }
+    } catch (error) {
       debugPrint(error.toString());
       setState(() {
         loading = false;
       });
       Utils().toastMessage(error.toString());
-    });
+    }
   }
 
   @override
@@ -65,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("SignUp Screen"),
+          title: const Text("Sign Up Screen"),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -154,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
                       RegExp regex = RegExp(pattern);
                       if (!(regex.hasMatch(value))) {
-                        return 'Use spacial characters and numbers';
+                        return 'Use special characters and numbers';
                       }
                       return null;
                     },
@@ -184,7 +204,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)";
                       RegExp regex = RegExp(pattern);
                       if (!(regex.hasMatch(value))) {
-                        return 'Use spacial characters and numbers';
+                        return 'Use special characters and numbers';
+                      }
+                      if (value != passwordController.text) {
+                        return 'Passwords do not match';
                       }
                       return null;
                     },
