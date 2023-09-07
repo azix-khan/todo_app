@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:todo_app/auth/forgot_password_screen.dart';
 import 'package:todo_app/auth/signup_screen.dart';
 import 'package:todo_app/posts/tasks_screen.dart';
 import 'package:todo_app/widgets/round_button.dart';
@@ -160,6 +161,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         login();
                       }
                     },
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgotPasswordScreen()));
+                      },
+                      child: const Text("Forgot Password"),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
